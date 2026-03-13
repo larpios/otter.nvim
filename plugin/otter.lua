@@ -1,4 +1,3 @@
-
 -- make OtterConfig globally available
 require("otter.config")
 
@@ -27,3 +26,6 @@ end, {
     end)
   end,
 })
+vim.api.nvim_create_user_command("OtterOpen", function()
+  require("otter").open_otter_buffer()
+end, {})

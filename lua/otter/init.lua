@@ -405,4 +405,28 @@ M.ask_format = function()
   vim.deprecate("otter.ask_format", "vim.lsp.buf.format", "2.0.0", "otter.nvim", true)
 end
 
+--- Open the otter buffer corresponding to the current language context
+M.open_otter_buffer = function()
+  local main_nr = api.nvim_get_current_buf()
+  if keeper.rafts[main_nr] == nil then
+    vim.notify("[otter] No otter raft active for this buffer", vim.log.levels.WARN)
+    return
+  end
+
+  local lang = keeper.get_current_language_context()
+  if lang == nil then
+    vim.notify("[otter] Cursor is not in an embedded code block", vim.log.levels.INFO)
+    return
+  end
+
+  local otter_nr = keeper.rafts[main_nr].buffers[lang]
+  if otter_nr == nil then
+    vim.notify("[otter] No otter buffer found for language: " .. lang, vim.log.levels.WARN)
+    return
+  end
+
+  -- Open the otter buffer in a new window
+  vim.api.nvim_set_current_buf(otter_nr)
+end
+
 return M
